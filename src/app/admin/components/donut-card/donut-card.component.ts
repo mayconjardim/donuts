@@ -5,7 +5,9 @@ import { Component, Input } from '@angular/core';
   selector: 'donut-card',
   template: ` <div
     class="donut-card"
-    [ngClass]="{ 'donut-card-promo': donut.promo }"
+    [ngClass]="{
+      'donut-card-promo': donut.promo === 'novo' || donut.promo === 'limitado'
+    }"
   >
     <img
       src="/assets/img/{{ donut.icon }}.svg"
@@ -15,6 +17,13 @@ import { Component, Input } from '@angular/core';
     <div>
       <p class="donut-card-name">
         {{ donut.name }}
+        <ng-container [ngSwitch]="donut.promo">
+          <span class="donut-card-label">
+            <ng-template [ngSwitchCase]="'novo'"> NOVO</ng-template>
+            <ng-template [ngSwitchCase]="'limitado'"> LIMITADO</ng-template>
+            <ng-template ngSwitchDefault> CLASSICOS</ng-template>
+          </span>
+        </ng-container>
       </p>
       <p class="donut-card-price">
         {{ donut.price | currency: 'BRL' }}
@@ -37,6 +46,14 @@ import { Component, Input } from '@angular/core';
 
         &-name {
           font-size: 16px;
+        }
+        &-label {
+          border: 1px solid #c14583;
+          border-radius: 4px;
+          padding: 0 4px;
+          margin-left: 5px;
+          font-size: 12px;
+          color: #c14583;
         }
 
         &-promo {
