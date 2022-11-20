@@ -1,13 +1,20 @@
+import { Donut } from './../../models/donut.model';
 import { Component, OnInit } from '@angular/core';
-import { Donut } from '../../models/donut.model';
 
 @Component({
   selector: 'donut-list',
   template: `
     <div>
-      <donut-card [donut]="donuts[0]"></donut-card>
-      <donut-card [donut]="donuts[1]"></donut-card>
-      <donut-card [donut]="donuts[2]"></donut-card>
+      <ng-container *ngIf="donuts.length; else nothing">
+        <donut-card
+          *ngFor="let donut of donuts; trackBy: trackById"
+          [donut]="donut"
+        ></donut-card>
+      </ng-container>
+
+      <ng-template #nothing>
+        <p>Not dunets here....</p>
+      </ng-template>
     </div>
   `,
   styles: [],
@@ -23,6 +30,7 @@ export class DonutListComponent implements OnInit {
         name: 'Chocolate',
         icon: 'just-chocolate',
         price: 19.99,
+        promo: true,
         description: 'Apenas para os viciados em chocolate.',
       },
       {
@@ -40,5 +48,9 @@ export class DonutListComponent implements OnInit {
         description: 'O Sabor impecavel',
       },
     ];
+  }
+
+  trackById(index: number, value: Donut) {
+    return value.id;
   }
 }

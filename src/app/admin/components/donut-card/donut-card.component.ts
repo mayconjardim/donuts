@@ -3,7 +3,10 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'donut-card',
-  template: ` <div class="donut-card">
+  template: ` <div
+    class="donut-card"
+    [ngClass]="{ 'donut-card-promo': donut.promo }"
+  >
     <img
       src="/assets/img/{{ donut.icon }}.svg"
       [alt]="donut.name"
@@ -14,7 +17,7 @@ import { Component, Input } from '@angular/core';
         {{ donut.name }}
       </p>
       <p class="donut-card-price">
-        {{ donut.price }}
+        {{ donut.price | currency: 'BRL' }}
       </p>
     </div>
   </div>`,
@@ -36,6 +39,9 @@ import { Component, Input } from '@angular/core';
           font-size: 16px;
         }
 
+        &-promo {
+          border: 2px solid #eee;
+        }
         &-price {
           font-size: 14px;
           color: #c14583;
