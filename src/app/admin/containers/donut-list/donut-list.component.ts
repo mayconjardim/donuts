@@ -1,5 +1,6 @@
 import { Donut } from './../../models/donut.model';
 import { Component, OnInit } from '@angular/core';
+import { DonutService } from '../../services/donut.service';
 
 @Component({
   selector: 'donut-list',
@@ -13,7 +14,7 @@ import { Component, OnInit } from '@angular/core';
       </ng-container>
 
       <ng-template #nothing>
-        <p>Not dunets here....</p>
+        <p>Não encontramos Donuts....</p>
       </ng-template>
     </div>
   `,
@@ -21,49 +22,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DonutListComponent implements OnInit {
   donuts!: Donut[];
-  constructor() {}
+  constructor(private service: DonutService) {}
 
   ngOnInit(): void {
-    this.donuts = [
-      {
-        id: 'y8z0s',
-        name: 'Chocolate',
-        icon: 'just-chocolate',
-        price: 19.99,
-        promo: 'limitado',
-        description: 'Apenas para os viciados em chocolate.',
-      },
-      {
-        id: 'w47ws',
-        name: 'Caldas de Chocolate',
-        icon: 'glazed-fudge',
-        price: 12.99,
-        description: 'A perfeição ',
-      },
-      {
-        id: 'f84ds',
-        name: 'Caramelo',
-        icon: 'caramel-swirl',
-        promo: 'limitado',
-        price: 17.99,
-        description: 'O sabor impecavel',
-      },
-      {
-        id: 'f47sdc',
-        name: 'Leite Condensado',
-        icon: 'sour-supreme',
-        promo: 'novo',
-        price: 16.99,
-        description: 'O querido da galera',
-      },
-      {
-        id: 'gg222z',
-        name: 'Baunilha',
-        icon: 'zesty-lemon',
-        price: 18.99,
-        description: 'O sabor delicado',
-      },
-    ];
+    this.donuts = this.service.read();
   }
 
   trackById(index: number, value: Donut) {

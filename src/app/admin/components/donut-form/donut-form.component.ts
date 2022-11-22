@@ -5,7 +5,7 @@ import { Donut } from '../../models/donut.model';
 @Component({
   selector: 'donut-form',
   template: `
-    <form class="donut-form" (ngSubmit)="handleSubmit(form)" #form="ngForm">
+    <form class="donut-form" #form="ngForm">
       <label>
         <span>Nome</span>
         <input
@@ -116,7 +116,17 @@ import { Donut } from '../../models/donut.model';
         </ng-container>
       </label>
 
-      <button type="submit" class="btn btn--green">Criar</button>
+      <button type="button" class="btn btn--green" (click)="handleCreate(form)">
+        Criar
+      </button>
+      <button
+        type="button"
+        class="btn btn--green"
+        [disabled]="form.untouched"
+        (click)="handleUpdate(form)"
+      >
+        Update
+      </button>
       <button type="button" class="btn btn--grey" (click)="form.resetForm()">
         Limpar
       </button>
@@ -124,9 +134,6 @@ import { Donut } from '../../models/donut.model';
       <div class="donut-form-working" *ngIf="form.valid && form.submitted">
         Working...
       </div>
-
-      <pre>{{ donut | json }}</pre>
-      <pre>{{ form.value | json }}</pre>
     </form>
   `,
   styles: [
@@ -167,6 +174,7 @@ import { Donut } from '../../models/donut.model';
 export class DonutFormComponent {
   @Input() donut!: Donut;
   @Output() create = new EventEmitter<Donut>();
+  @Output() update = new EventEmitter<Donut>();
 
   icons: string[] = [
     'caramel-swirl',
@@ -179,9 +187,17 @@ export class DonutFormComponent {
   ];
   constructor() {}
 
-  handleSubmit(form: NgForm) {
+  handleCreate(form: NgForm) {
     if (form.valid) {
       this.create.emit(form.value);
+    } else {
+      form.form.markAllAsTouched();
+    }
+  }
+
+  handleUpdate(form: NgForm) {
+    if (form.valid) {
+      this.update.emit({ id: this.donut.id, ...form.value });
     } else {
       form.form.markAllAsTouched();
     }
