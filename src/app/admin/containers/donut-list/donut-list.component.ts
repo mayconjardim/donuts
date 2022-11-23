@@ -6,7 +6,7 @@ import { DonutService } from '../../services/donut.service';
   selector: 'donut-list',
   template: `
     <div>
-      <ng-container *ngIf="donuts.length; else nothing">
+      <ng-container *ngIf="donuts?.length; else nothing">
         <donut-card
           *ngFor="let donut of donuts; trackBy: trackById"
           [donut]="donut"
@@ -21,11 +21,11 @@ import { DonutService } from '../../services/donut.service';
   styles: [],
 })
 export class DonutListComponent implements OnInit {
-  donuts!: Donut[];
+  donuts: Donut[] = [];
   constructor(private service: DonutService) {}
 
   ngOnInit(): void {
-    this.donuts = this.service.read();
+    this.service.read().subscribe((donuts: Donut[]) => (this.donuts = donuts));
   }
 
   trackById(index: number, value: Donut) {

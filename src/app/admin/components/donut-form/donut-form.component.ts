@@ -5,7 +5,7 @@ import { Donut } from '../../models/donut.model';
 @Component({
   selector: 'donut-form',
   template: `
-    <form class="donut-form" #form="ngForm">
+    <form class="donut-form" #form="ngForm" *ngIf="donut; else loading">
       <label>
         <span>Nome</span>
         <input
@@ -15,7 +15,6 @@ import { Donut } from '../../models/donut.model';
           required
           minlength="5"
           [ngModel]="donut.name"
-          [ngModelOptions]="{ updateOn: 'submit' }"
           #name="ngModel"
         />
       </label>
@@ -125,8 +124,13 @@ import { Donut } from '../../models/donut.model';
         [disabled]="form.untouched"
         (click)="handleUpdate(form)"
       >
-        Update
+        Atualizar
       </button>
+
+      <button type="button" class="btn btn--green" (click)="handleDelete()">
+        Deletar
+      </button>
+
       <button type="button" class="btn btn--grey" (click)="form.resetForm()">
         Limpar
       </button>
@@ -135,6 +139,8 @@ import { Donut } from '../../models/donut.model';
         Working...
       </div>
     </form>
+
+    <ng-template #loading> Carregando...</ng-template>
   `,
   styles: [
     `
@@ -175,6 +181,7 @@ export class DonutFormComponent {
   @Input() donut!: Donut;
   @Output() create = new EventEmitter<Donut>();
   @Output() update = new EventEmitter<Donut>();
+  @Output() delete = new EventEmitter<Donut>();
 
   icons: string[] = [
     'caramel-swirl',
@@ -200,6 +207,12 @@ export class DonutFormComponent {
       this.update.emit({ id: this.donut.id, ...form.value });
     } else {
       form.form.markAllAsTouched();
+    }
+  }
+
+  handleDelete() {
+    if (confirm(`Você deseja deletar ${this.donut.name}?`)) {
+      this.delete.emit({ ...this.donut });
     }
   }
 }

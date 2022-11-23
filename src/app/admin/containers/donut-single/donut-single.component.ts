@@ -10,6 +10,7 @@ import { DonutService } from '../../services/donut.service';
         [donut]="donut"
         (create)="onCreate($event)"
         (update)="onUpdate($event)"
+        (delete)="onDelete($event)"
       ></donut-form>
     </div>
   `,
@@ -20,14 +21,26 @@ export class DonutSingleComponent implements OnInit {
   constructor(private service: DonutService) {}
 
   ngOnInit(): void {
-    this.donut = this.service.readOne('gg222z');
+    this.service
+      .readOne('peWluCd')
+      .subscribe((donut: Donut) => (this.donut = donut));
   }
 
   onCreate(donut: Donut) {
-    this.service.create(donut);
+    this.service
+      .create(donut)
+      .subscribe(() => console.log('Criado com sucesso!'));
   }
 
   onUpdate(donut: Donut) {
-    this.service.update(donut);
+    this.service
+      .update(donut)
+      .subscribe(() => console.log('Atualizado com sucesso!'));
+  }
+
+  onDelete(donut: Donut) {
+    this.service
+      .delete(donut)
+      .subscribe(() => console.log('Deletado com sucesso!'));
   }
 }

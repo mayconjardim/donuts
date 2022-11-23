@@ -1,83 +1,76 @@
-import { Donut } from './../models/donut.model';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { map, of, tap } from 'rxjs';
+
+import { Donut } from './../models/donut.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DonutService {
-  private donuts: Donut[] = [
-    {
-      id: 'y8z0s',
-      name: 'Chocolate',
-      icon: 'just-chocolate',
-      price: 19.99,
-      promo: 'limitado',
-      description: 'Apenas para os viciados em chocolate.',
-    },
-    {
-      id: 'w47ws',
-      name: 'Caldas de Chocolate',
-      icon: 'glazed-fudge',
-      price: 12.99,
-      description: 'A perfeição ',
-    },
-    {
-      id: 'f84ds',
-      name: 'Caramelo',
-      icon: 'caramel-swirl',
-      promo: 'limitado',
-      price: 17.99,
-      description: 'O sabor impecavel',
-    },
-    {
-      id: 'f47sdc',
-      name: 'Leite Condensado',
-      icon: 'sour-supreme',
-      promo: 'novo',
-      price: 16.99,
-      description: 'O querido da galera',
-    },
-    {
-      id: 'gg222z',
-      name: 'Baunilha',
-      icon: 'zesty-lemon',
-      price: 18.99,
-      description: 'O sabor delicado',
-    },
-  ];
-  constructor() {}
+  private donuts: Donut[] = [];
+  constructor(private http: HttpClient) {}
 
   read() {
-    return this.donuts;
+    if (this.donuts.length) {
+      return of(this.donuts);
+    }
+
+    return this.http.get<Donut[]>(`/api/donuts`).pipe(
+      tap((donuts) => {
+        this.donuts = donuts;
+      })
+    );
   }
 
   readOne(id: string) {
-    const donut = this.read().find((donut: Donut) => donut.id === id);
+    return this.read().pipe(
+      map((donuts) => {
+        const donut = donuts.find((donut: Donut) => donut.id === id);
 
-    if (donut) {
-      return donut;
-    }
+        if (donut) {
+          return donut;
+        }
 
-    return {
-      name: '',
-      icon: '',
-      price: 0,
-      description: '',
-    };
+        return {
+          name: '',
+          icon: '',
+          price: 0,
+          description: '',
+        };
+      })
+    );
   }
 
   create(payload: Donut) {
-    this.donuts = [...this.donuts, payload];
-    console.log(this.donuts);
+    return this.http.post<Donut>(`/api/donuts`, payload).pipe(
+      tap((donut) => {
+        this.donuts = [...this.donuts, donut];
+      })
+    );
   }
 
   update(payload: Donut) {
-    this.donuts = this.donuts.map((donut: Donut) => {
-      if (donut.id === payload.id) {
-        return payload;
-      }
-      return donut;
-    });
-    console.log(this.donuts);
+    return this.http.put<Donut>(`/api/donuts/${payload.id}`, payload).pipe(
+      tap((donut) => {
+        this.donuts = this.donuts.map((item: Donut) => {
+          if (item.id === donut.id) {
+            return donut;
+          }
+          return item;
+        });
+      })
+    );
+  }
+
+  delete(payload: Donut) {
+    return this.http.delete<Donut>(`/api/donuts/${payload.id}`).pipe(
+      tap(() => {
+        this.donuts = this.donuts.filter(
+          (donut: Donut) => donut.id !== payload.id
+        );
+      })
+    );
   }
 }
