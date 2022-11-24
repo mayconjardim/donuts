@@ -3,8 +3,9 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'donut-card',
-  template: ` <div
+  template: ` <a
     class="donut-card"
+    [routerLink]="donut.id"
     [ngClass]="{
       'donut-card-promo': donut.promo === 'novo' || donut.promo === 'limitado'
     }"
@@ -29,7 +30,7 @@ import { Component, Input } from '@angular/core';
         {{ donut.price | currency: 'BRL' }}
       </p>
     </div>
-  </div>`,
+  </a>`,
   styles: [
     `
       .donut-card {

@@ -1,6 +1,7 @@
 import { Donut } from './../../models/donut.model';
 import { Component, OnInit } from '@angular/core';
 import { DonutService } from '../../services/donut.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'donut-single',
@@ -18,12 +19,11 @@ import { DonutService } from '../../services/donut.service';
 })
 export class DonutSingleComponent implements OnInit {
   donut!: Donut;
-  constructor(private service: DonutService) {}
+  constructor(private service: DonutService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.service
-      .readOne('peWluCd')
-      .subscribe((donut: Donut) => (this.donut = donut));
+    const id = this.route.snapshot.paramMap.get('id');
+    this.service.readOne(id).subscribe((donut: Donut) => (this.donut = donut));
   }
 
   onCreate(donut: Donut) {
