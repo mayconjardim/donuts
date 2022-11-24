@@ -1,12 +1,23 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AdminModule } from './admin/admin.module';
+import { RouterModule, Routes } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 
+export const routes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule),
+  },
+  { path: '', pathMatch: 'full', redirectTo: 'admin' },
+  { path: '**', redirectTo: 'admin' },
+];
+
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AdminModule],
+  imports: [BrowserModule, RouterModule.forRoot(routes), HttpClientModule],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
