@@ -37,6 +37,14 @@
       "icon": "zesty-lemon",
       "price": 18.99,
       "description": "O sabor delicado"
+    },
+    {
+      "name": "Morango",
+      "icon": "strawberry-glaze",
+      "price": 14.99,
+      "promo": "novo",
+      "description": "Para os apixonados por morango.",
+      "id": "WTp4kuJ"
     }
   ]
 }
