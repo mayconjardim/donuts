@@ -14,6 +14,9 @@ import { Donut } from './../models/donut.model';
 export class DonutService {
   private donuts: Donut[] = [];
 
+  api: string =
+    'https://my-json-server.typicode.com/mayconjardim/donuts/donuts';
+
   constructor(private http: HttpClient) {}
 
   read() {
@@ -21,7 +24,7 @@ export class DonutService {
       return of(this.donuts);
     }
 
-    return this.http.get<Donut[]>(`/api/donuts`).pipe(
+    return this.http.get<Donut[]>(this.api).pipe(
       tap((donuts) => {
         this.donuts = donuts;
       }),
@@ -51,7 +54,7 @@ export class DonutService {
   }
 
   create(payload: Donut) {
-    return this.http.post<Donut>(`/api/donuts`, payload).pipe(
+    return this.http.post<Donut>(this.api, payload).pipe(
       tap((donut) => {
         this.donuts = [...this.donuts, donut];
       }),
@@ -60,7 +63,7 @@ export class DonutService {
   }
 
   update(payload: Donut) {
-    return this.http.put<Donut>(`/api/donuts/${payload.id}`, payload).pipe(
+    return this.http.put<Donut>(this.api + `/${payload.id}`, payload).pipe(
       tap((donut) => {
         this.donuts = this.donuts.map((item: Donut) => {
           if (item.id === donut.id) {
@@ -74,7 +77,7 @@ export class DonutService {
   }
 
   delete(payload: Donut) {
-    return this.http.delete<Donut>(`/api/donuts/${payload.id}`).pipe(
+    return this.http.delete<Donut>(this.api + `/${payload.id}`).pipe(
       tap(() => {
         this.donuts = this.donuts.filter(
           (donut: Donut) => donut.id !== payload.id
